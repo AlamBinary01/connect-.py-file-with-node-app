@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot</title>
+</head>
+<body>
+  <h1>Chat with the Chatbot</h1>
+  <div id="chat-window">
+    <div id="response"></div>
+    <form id="chat-form">
+      <input type="text" id="user-input" placeholder="Type your message">
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('chat-form');
+    const responseDiv = document.getElementById('response');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const userInput = document.getElementById('user-input').value.trim();
+
+      if (userInput.toLowerCase() === 'exit') {
+        responseDiv.innerHTML += "<p>ChatBot: Goodbye!</p>";
+        form.style.display = 'none';  // Hide the input field and send button
+        return;
+      }
+
+      responseDiv.innerHTML += "<p>You: " + userInput + "</p>";
+
+      const response = await fetch('/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: userInput }),
+      });
+
+      const data = await response.text();
+      responseDiv.innerHTML += "<p>ChatBot: " + data + "</p>";
+      document.getElementById('user-input').value = '';  // Clear the input field
+    });
+  </script>
+</body>
+</html>
